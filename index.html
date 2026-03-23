@@ -686,11 +686,7 @@ window.addEventListener('load', async function() {
 });
 // global click-to-play removed — phone video handled by click handler below
 
-// Phone mockup video — click to play/pause
-document.addEventListener('click', e => {
-  const phoneVideo = e.target.closest('#phone-area video, .phone-screen video, #ovr video');
-  if(phoneVideo) {
-    if(phoneVideo.paused) phoneVideo.play().catch(()=>{});
+
     else phoneVideo.pause();
   }
 });
