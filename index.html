@@ -312,13 +312,14 @@ function msc(img) {
   const src = img._src || img.src;
   if (src) {
     const id = "v" + Math.random().toString(36).slice(2,7);
-    return `<div style="position:relative;width:100%;height:100%;background:#111;overflow:hidden;" onclick="tpv('${id}')">
+    return `<div style="position:relative;width:100%;height:100%;background:#111;overflow:hidden;cursor:pointer;" onclick="tpv('${id}')">
       <video id="${id}" src="${src}" muted loop playsinline preload="metadata"
         style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"
-        onloadedmetadata="this.currentTime=0.01"
-        oncanplay="this.play().catch(()=>{})"></video>
-      <div id="btn${id}" style="position:absolute;bottom:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.15s;">
-        <svg id="ico${id}" viewBox="0 0 24 24" width="14" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+        onloadedmetadata="this.currentTime=0.01;this.play().catch(()=>{})"></video>
+      <div id="ovr${id}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 0.2s;">
+        <div style="width:52px;height:52px;border-radius:50%;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;">
+          <svg id="ico${id}" viewBox="0 0 24 24" width="22" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+        </div>
       </div>
     </div>`;
   }
@@ -326,14 +327,21 @@ function msc(img) {
 }
 function tpv(id) {
   const v = document.getElementById(id);
+  const ovr = document.getElementById('ovr' + id);
   const ico = document.getElementById('ico' + id);
   if (!v) return;
   if (v.paused) {
     v.play().catch(()=>{});
+    // Show pause icon briefly then fade
     ico.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/>';
+    ovr.style.opacity = '1';
+    clearTimeout(v._t);
+    v._t = setTimeout(() => { ovr.style.opacity = '0'; }, 800);
   } else {
     v.pause();
+    // Show play icon, keep visible while paused
     ico.innerHTML = '<polygon points="6 4 20 12 6 20 6 4"/>';
+    ovr.style.opacity = '1';
   }
 }
 function tp(id){
