@@ -332,14 +332,14 @@ function tpv(id) {
   if (!v) return;
   if (v.paused) {
     // Resume — hide icon immediately, play
-    if (ico) { ico.style.opacity = '0'; ico.innerHTML = ''; }
+    if (ico) { ico.style.opacity = '0'; ico.innerHTML = ''; if(ovr) ovr.style.opacity = '0'; }
     v.play().catch(()=>{});
   } else {
     // Pause — show play icon only (no pause icon)
     v.pause();
     if (ico) {
       ico.innerHTML = `<svg width="36" height="36" viewBox="0 0 36 36" fill="white" xmlns="http://www.w3.org/2000/svg"><polygon points="11,7 29,18 11,29"/></svg>`;
-      ico.style.opacity = '1';
+      ico.style.opacity = '1'; if(ovr) ovr.style.opacity = '1';
     }
   }
 }
