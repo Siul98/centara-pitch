@@ -309,16 +309,32 @@ const BADGES = {
 };
 
 function msc(img) {
-  if (img.src && !img.pcloudCode) {
-    const id="v"+Math.random().toString(36).slice(2,7);
-    return `<div style="position:relative;width:100%;height:100%;background:#1a2a35" onclick="tp('${id}')">
-      <video id="${id}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" src="${img.src}" muted loop playsinline preload="auto"
+  const src = img._src || img.src;
+  if (src) {
+    const id = "v" + Math.random().toString(36).slice(2,7);
+    return `<div style="position:relative;width:100%;height:100%;background:#111;overflow:hidden;" onclick="tpv('${id}')">
+      <video id="${id}" src="${src}" muted loop playsinline preload="metadata"
+        style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"
+        onloadedmetadata="this.currentTime=0.01"
         oncanplay="this.play().catch(()=>{})"></video>
-      <div id="b${id}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.22);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s;pointer-events:none;">
-        <svg id="i${id}" viewBox="0 0 24 24" width="16" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg>
-      </div></div>`;
+      <div id="btn${id}" style="position:absolute;bottom:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.15s;">
+        <svg id="ico${id}" viewBox="0 0 24 24" width="14" fill="white"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+      </div>
+    </div>`;
   }
   return `<div class="ph" style="background:${img.bg||'linear-gradient(160deg,#003B54,#009CAB)'}">${img.label||''}</div>`;
+}
+function tpv(id) {
+  const v = document.getElementById(id);
+  const ico = document.getElementById('ico' + id);
+  if (!v) return;
+  if (v.paused) {
+    v.play().catch(()=>{});
+    ico.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/>';
+  } else {
+    v.pause();
+    ico.innerHTML = '<polygon points="6 4 20 12 6 20 6 4"/>';
+  }
 }
 function tp(id){
   const v=document.getElementById(id),b=document.getElementById("b"+id),i=document.getElementById("i"+id);
@@ -410,7 +426,12 @@ const CW = 182, CGAP = 10;
       const [aw0,ah0] = asp0.split('/').map(Number);
       card.style.width = Math.round(262*aw0/ah0)+'px';
       const thumb = img0.src
-      ? `<div class="card-media" style="background:#111;overflow:hidden;"><video src="${img0.src}" muted loop playsinline preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" oncanplay="this.play().catch(()=>{})"></video></div>`
+      ? `<div class="card-media" style="background:#111;overflow:hidden;position:relative;">
+          <video src="${img0.src}" muted playsinline preload="metadata"
+            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"
+            onloadedmetadata="this.currentTime=0.01"></video>
+          <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.45);border-radius:4px;padding:2px 6px;font-size:9px;color:#fff;letter-spacing:1px;">▶ VIDEO</div>
+        </div>`
       : `<div class="card-media"><div class="ph" style="background:${img0.bg||'linear-gradient(160deg,#003B54,#009CAB)'}">${img0.label||''}</div></div>`;
       card.innerHTML = thumb;
           card.addEventListener("click", () => jumpToPost(pi));
