@@ -331,15 +331,17 @@ function tpv(id) {
   const ico = document.getElementById('ico' + id);
   if (!v) return;
   if (v.paused) {
-    // Resume — hide icon immediately, play
-    if (ico) { ico.style.opacity = '0'; ico.innerHTML = ''; if(ovr) ovr.style.opacity = '0'; }
+    // Resume — hide overlay, play
     v.play().catch(()=>{});
+    if (ovr) ovr.style.opacity = '0';
+    if (ico) { ico.style.opacity = '0'; ico.innerHTML = ''; }
   } else {
-    // Pause — show play icon only (no pause icon)
+    // Pause — show centered play button overlay
     v.pause();
+    if (ovr) ovr.style.opacity = '1';
     if (ico) {
-      ico.innerHTML = `<svg width="36" height="36" viewBox="0 0 36 36" fill="white" xmlns="http://www.w3.org/2000/svg"><polygon points="11,7 29,18 11,29"/></svg>`;
-      ico.style.opacity = '1'; if(ovr) ovr.style.opacity = '1';
+      ico.style.cssText = 'display:flex;align-items:center;justify-content:center;width:52px;height:52px;background:rgba(0,0,0,0.55);border-radius:50%;opacity:1;';
+      ico.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M6 4.5C6 3.67 6.9 3.15 7.61 3.58L19.44 10.08C20.13 10.5 20.13 11.5 19.44 11.92L7.61 18.42C6.9 18.85 6 18.33 6 17.5V4.5Z"/></svg>';
     }
   }
 }
