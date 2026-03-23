@@ -454,11 +454,11 @@ function jumpToPost(pi) {
     pe.scrollIntoView({behavior:"smooth",block:"nearest"});
     pe.classList.add("fl");
     setTimeout(()=>pe.classList.remove("fl"),700);
-    // Pause all other phone feed videos
+    // Pause all other phone feed videos (via tpv to update their icons)
     document.querySelectorAll('#feed video').forEach(v => { if(!v.paused) tpv(v.id); });
-    // Auto-play the video of this post synchronously (preserves gesture context)
+    // Autoplay this post's video — call play() directly to keep gesture context
     const vid = pe.querySelector('video');
-    if (vid && vid.paused) tpv(vid.id);
+    if (vid && vid.paused) vid.play().catch(()=>{});
   }
 }
 
