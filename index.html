@@ -331,17 +331,16 @@ function tpv(id) {
   const ico = document.getElementById('ico' + id);
   if (!v) return;
   if (v.paused) {
+    // Resume — hide icon immediately, play
+    if (ico) { ico.style.opacity = '0'; ico.innerHTML = ''; }
     v.play().catch(()=>{});
-    // Show pause icon briefly then fade
-    ico.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/>';
-    ovr.style.opacity = '1';
-    clearTimeout(v._t);
-    v._t = setTimeout(() => { ovr.style.opacity = '0'; }, 800);
   } else {
+    // Pause — show play icon only (no pause icon)
     v.pause();
-    // Show play icon, keep visible while paused
-    ico.innerHTML = '<polygon points="6 4 20 12 6 20 6 4"/>';
-    ovr.style.opacity = '1';
+    if (ico) {
+      ico.innerHTML = `<svg width="36" height="36" viewBox="0 0 36 36" fill="white" xmlns="http://www.w3.org/2000/svg"><polygon points="11,7 29,18 11,29"/></svg>`;
+      ico.style.opacity = '1';
+    }
   }
 }
 function tp(id){
@@ -454,11 +453,15 @@ function jumpToPost(pi) {
     pe.scrollIntoView({behavior:"smooth",block:"nearest"});
     pe.classList.add("fl");
     setTimeout(()=>pe.classList.remove("fl"),700);
-    // Pause all other phone feed videos (via tpv to update their icons)
+    // Pause all other phone feed videos
     document.querySelectorAll('#feed video').forEach(v => { if(!v.paused) tpv(v.id); });
-    // Autoplay this post's video — call play() directly to keep gesture context
+    // Autoplay this post's video — hide ico, play
     const vid = pe.querySelector('video');
-    if (vid && vid.paused) vid.play().catch(()=>{});
+    if (vid && vid.paused) {
+      const ico = document.getElementById('ico' + vid.id);
+      if (ico) { ico.style.opacity = '0'; ico.innerHTML = ''; }
+      vid.play().catch(()=>{});
+    }
   }
 }
 
