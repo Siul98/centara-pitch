@@ -438,7 +438,7 @@ const CW = 182, CGAP = 10;
           <video src="${img0.src}" muted playsinline preload="metadata"
             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"
             onloadedmetadata="this.currentTime=0.01"></video>
-          <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.45);border-radius:4px;padding:2px 6px;font-size:9px;color:#fff;letter-spacing:1px;">▶ VIDEO</div>
+          <div style="position:absolute;top:6px;right:6px;z-index:3;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))"><svg width="18" height="18" viewBox="0 0 18 18" fill="white" xmlns="http://www.w3.org/2000/svg"><polygon points="5,3 15,9 5,15"/></svg></div>
         </div>`
       : `<div class="card-media"><div class="ph" style="background:${img0.bg||'linear-gradient(160deg,#003B54,#009CAB)'}">${img0.label||''}</div></div>`;
       card.innerHTML = thumb;
