@@ -407,6 +407,7 @@ const CW = 182, CGAP = 10;
       const [aw0,ah0] = asp0.split('/').map(Number);
       card.style.width = Math.round(262*aw0/ah0)+'px';
       const thumb = `<div class="card-media"><div class="ph" style="background:${img0.bg||'linear-gradient(160deg,#003B54,#009CAB)'}">${img0.label||''}</div></div>`;
+      card.innerHTML = thumb;
           card.addEventListener("click", () => jumpToPost(pi));
     strip.appendChild(card);
   });
@@ -606,48 +607,39 @@ document.getElementById("stage").addEventListener("wheel", (e) => {
 </div>
 
 
+
 <script>
 window.addEventListener('load', async function() {
-  // Small delay to let everything initialize
   await new Promise(r => setTimeout(r, 500));
-  
-  // Resolve pCloud URLs
   for (const p of POSTS) {
     for (const img of p.images) {
       if (!img.pcloudCode) continue;
       try {
         const r = await fetch('https://eapi.pcloud.com/getpublinkdownload?code=' + img.pcloudCode);
         const d = await r.json();
-        if (d.result === 0) img.src = 'https://' + d.hosts[0] + d.path;
-      } catch(e) { console.warn('pcloud fail:', e); }
+        if (d.result === 0) img._src = 'https://' + d.hosts[0] + d.path;
+      } catch(e) {}
     }
   }
-  
-  // Update post 9 in phone feed
   const p9 = POSTS[9];
-  if (!p9 || !p9.images[0].src) { console.warn('p9 no src'); return; }
-  
+  if (!p9 || !p9.images[0]._src) return;
   const ct = document.getElementById('t9');
   if (ct) ct.innerHTML = p9.images.map(img => '<div class="cs">' + msc(img) + '</div>').join('');
-  
-  // Update card strip for post 9
   document.querySelectorAll('.card[data-post="9"]').forEach(card => {
+    const img0 = p9.images[0];
+    card.style.width = Math.round(262*16/9) + 'px';
     const media = card.querySelector('.card-media');
     if (!media) return;
     media.innerHTML = '';
     media.style.background = '#1a2a35';
-    card.style.width = Math.round(262*16/9) + 'px';
     const v = document.createElement('video');
-    v.src = p9.images[0].src;
-    v.muted = true; v.loop = true;
+    v.src = img0._src; v.muted = true; v.loop = true;
     v.setAttribute('playsinline',''); v.preload = 'auto';
     v.style.cssText = 'display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
     v.addEventListener('canplay', () => v.play().catch(()=>{}));
     media.appendChild(v);
   });
-  
   document.querySelectorAll('video').forEach(v => v.play().catch(()=>{}));
-  console.log('pCloud resolved, src:', p9.images[0].src.substring(0,50));
 });
 document.addEventListener('click', () => document.querySelectorAll('video').forEach(v => v.play().catch(()=>{})));
 </script>
