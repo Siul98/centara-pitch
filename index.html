@@ -450,7 +450,17 @@ const CW = 182, CGAP = 10;
 function jumpToPost(pi) {
   document.querySelectorAll(".card").forEach(el => el.classList.toggle("act", parseInt(el.dataset.post)===pi));
   const pe = document.getElementById(`post-${pi}`);
-  if (pe) { pe.scrollIntoView({behavior:"smooth",block:"nearest"}); pe.classList.add("fl"); setTimeout(()=>pe.classList.remove("fl"),700); }
+  if (pe) {
+    pe.scrollIntoView({behavior:"smooth",block:"nearest"});
+    pe.classList.add("fl");
+    setTimeout(()=>pe.classList.remove("fl"),700);
+    // Auto-play video when jumping to a video post; pause all others first
+    const vid = pe.querySelector('video');
+    if (vid) {
+      document.querySelectorAll('#feed video').forEach(v => { if(v !== vid && !v.paused) tpv(v.id); });
+      setTimeout(() => { if(vid.paused) tpv(vid.id); }, 350);
+    }
+  }
 }
 
 // ââ CARD STRIP ANIMATION + DRAG ââ
