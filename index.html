@@ -340,8 +340,9 @@ function tpv(id) {
     if (ico) {
       if (ico.parentElement && ico.parentElement !== ovr)
         ico.parentElement.style.cssText = 'width:100%;height:100%;background:transparent;position:absolute;top:0;left:0;';
-      ico.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:1;width:52px;height:52px;';
-      ico.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 100 100"><path d="M25 12 Q22 10 22 12 L22 88 Q22 90 25 88 L88 52 Q92 50 88 48 Z" fill="rgba(255,255,255,0.9)"/></svg>';
+      const sz = Math.round((ovr.getBoundingClientRect().height || 100) * 0.38);
+      ico.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:1;';
+      ico.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="' + sz + '" height="' + sz + '" viewBox="0 0 64 64"><polygon points="18,10 18,54 54,32" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.9)" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/></svg>';
     }
   }
 }
