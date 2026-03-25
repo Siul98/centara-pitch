@@ -333,16 +333,26 @@ function tpv(id) {
   if (v.paused) {
     v.play().catch(()=>{});
     if (ovr) ovr.style.opacity = '0';
-    if (ico) { ico.style.cssText = 'opacity:0;'; ico.innerHTML = ''; }
+    // Hide the ico SVG
+    if (ico) ico.style.cssText = 'opacity:0!important;display:none!important;';
+    // Remove any play overlay div we added
+    const existingPlay = ovr && ovr.querySelector('.play-overlay');
+    if (existingPlay) existingPlay.remove();
   } else {
     v.pause();
     if (ovr) ovr.style.opacity = '1';
-    if (ico) {
-      if (ico.parentElement && ico.parentElement !== ovr)
-        ico.parentElement.style.cssText = 'width:100%;height:100%;background:transparent;position:absolute;top:0;left:0;';
-      const sz = Math.round((ovr.getBoundingClientRect().height || 100) * 0.38);
-      ico.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:1;';
-      ico.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="' + sz + '" height="' + sz + '" viewBox="0 0 64 64"><polygon points="18,10 18,54 54,32" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.9)" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+    // Hide the original ico SVG (it's the small 22px one from CSS)
+    if (ico) ico.style.cssText = 'opacity:0!important;display:none!important;';
+    // Remove any existing overlay
+    const existing = ovr && ovr.querySelector('.play-overlay');
+    if (existing) existing.remove();
+    // Create a fresh div overlay — not subject to .pa svg CSS rule
+    if (ovr) {
+      const d = document.createElement('div');
+      d.className = 'play-overlay';
+      d.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;';
+      d.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" style="display:block;"><polygon points="14,8 14,36 36,22" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.9)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+      ovr.appendChild(d);
     }
   }
 }
