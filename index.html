@@ -333,17 +333,18 @@ function tpv(id) {
   if (v.paused) {
     v.play().catch(()=>{});
     if (ovr) ovr.style.opacity = '0';
-    if (ico) { ico.style.opacity = '0'; ico.innerHTML = ''; ico.style.cssText = 'opacity:0;'; }
+    if (ico) { ico.style.cssText = 'opacity:0;'; ico.innerHTML = ''; }
   } else {
     v.pause();
     if (ovr) ovr.style.opacity = '1';
     if (ico) {
-      // Hide any wrapper (parent of ico inside ovr)
-      const wrapper = ico.parentElement;
-      if (wrapper && wrapper !== ovr) wrapper.style.cssText = 'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:transparent;';
-      // Show clean Instagram-style white play triangle
+      // Clear wrapper bg
+      if (ico.parentElement && ico.parentElement !== ovr) {
+        ico.parentElement.style.cssText = 'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:transparent;';
+      }
       ico.style.cssText = 'display:flex;align-items:center;justify-content:center;width:100%;height:100%;opacity:1;';
-      ico.innerHTML = '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 14C22 11.6 24.6 10.2 26.6 11.4L48.2 24.4C50.1 25.6 50.1 28.4 48.2 29.6L26.6 42.6C24.6 43.8 22 42.4 22 40V14Z" fill="white" filter="url(#ds)"/><defs><filter id="ds" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1" stdDeviation="3" flood-color="rgba(0,0,0,0.6)"/></filter></defs></svg>';
+      // Simple clean play triangle — Instagram style, white with shadow
+      ico.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="56" height="56" style="filter:drop-shadow(0 1px 6px rgba(0,0,0,0.7))"><polygon points="30,15 30,85 82,50" fill="white"/></svg>';
     }
   }
 }
